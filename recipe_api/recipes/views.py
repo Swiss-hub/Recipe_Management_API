@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets, permissions, generics
+from rest_framework import viewsets, permissions, generics, filters
 from .models import Category, Recipe, Ingredient
 from .serializers import CategorySerializer, RecipeSerializer, UserSerializer, IngredientSerializer
 from django.contrib.auth import get_user_model
@@ -22,6 +22,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title', 'description', 'ingredients__name', 'category__name']
+    ordering_fields = [ 'prep_time', 'cook_time', 'servings', 'created_at']
+    ordering = ['created_at'] 
 
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
