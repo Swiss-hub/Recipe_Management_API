@@ -6,15 +6,6 @@ User = get_user_model()
 
 
 # -------------------
-# Category Serializer
-# -------------------
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'name']
-
-
-# -------------------
 # Ingredient Serializer
 # -------------------
 class IngredientSerializer(serializers.ModelSerializer):
@@ -24,22 +15,30 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 # -------------------
+# Category Serializer
+# -------------------
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
+# -------------------
 # Recipe Serializer
 # -------------------
 class RecipeSerializer(serializers.ModelSerializer):
     creator = serializers.ReadOnlyField(source='creator.username') #show username
     category = CategorySerializer(read_only=True)
     category_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(), source='category', write_only=True
+        queryset=Category.objects.all(), source='category', write_only=True, required=False
     )
     ingredients = IngredientSerializer(many=True, read_only=True)
     ingredient_ids = serializers.PrimaryKeyRelatedField(
-        queryset=Ingredient.objects.all(), source='ingredients', write_only=True, many=True
+        queryset=Ingredient.objects.all(), source='ingredients', write_only=True, many=True, required=False
     )
 
     class Meta:
         model = Recipe
-        fields = ['id', 'title', 'description', 'ingredients', 'instructions', 'prep_time', 'cook_time', 'servings', 'created_at', 'creator', 'category', 'category_id' 'ingredient_ids']
+        fields = ['id', 'title', 'description', 'ingredients', 'instructions', 'prep_time', 'cook_time', 'servings', 'created_at', 'creator', 'category', 'category_id', 'ingredient_ids']
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

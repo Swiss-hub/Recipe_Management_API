@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, generics
-from .models import Category, Recipe
-from .serializers import CategorySerializer, RecipeSerializer, UserSerializer
+from .models import Category, Recipe, Ingredient
+from .serializers import CategorySerializer, RecipeSerializer, UserSerializer, IngredientSerializer
 from django.contrib.auth import get_user_model
 # Create your views here.
 
@@ -34,3 +34,12 @@ class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [] # Allow anyone to register
+
+# -------------------
+# Ingredient ViewSet
+# -------------------
+
+class IngredientViewSet(viewsets.ModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
